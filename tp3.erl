@@ -1,10 +1,9 @@
 -module(tp3).
-
--export([q1/0, q2/0, q3/0, q4/0]).
+-export([q1/0, q2/0, q3/0, q4/0, q6/0, q8/2]).
 
 
 %Films = [{id (rnd), titre (min 2 lettres), genre (enum), note moyenne (float), equipe (list acteurs separe par virgule), prix vente, nb exemplaires vendus, date production }].
-films() -> [{1, "Film 1", "action", 7.0, ["a 1","a 2","a 3"], 10.99, 5000, "2019-01-01"}, {2, "Film 2", "action", 7.3, ["a 1","a 2","a 3"], 7.99, 4000, "2019-01-01"}, {3, "Film 3", "action", 4.7, ["a 1","a 2","a 3"], 9.99, 3000, "2019-01-01"}, {4, "Film 4", "action", 4.8, ["a 1","a 2","a 3"], 8.99, 10000, "2019-01-01"}, {5, "Film 5", "action", 4.3, ["a 1","a 2","a 3"], 9.99, 2500, "2019-01-01"}].
+films() -> [{1, "Film 1", "action", 7.0, ["a 1","a 2","a 3"], 10.99, 5000, {2017,01,01}}, {2, "Film 2", "action", 7.3, ["a 1","a 2","a 3"], 7.99, 4000, {2020,01,01}}, {3, "Film 3", "action", 4.7, ["a 1","a 2","a 3"], 9.99, 3000, {2019,01,01}}, {4, "Film 4", "action", 4.8, ["a 1","a 2","a 3"], 8.99, 10000, {2019,01,01}}, {5, "Film 5", "action", 4.3, ["a 1","a 2","a 3"], 9.99, 2500, {2019,01,01}}].
 
 
 q1() -> 
@@ -72,17 +71,16 @@ q3() ->
 
 q3(FilmIndx, Films, AdjustedFilms) -> 
 	Film = lists:nth(FilmIndx, Films),
-	Rating = element(4, Film),
-	Price = element(6, Film),
+	{Id, Title, Genre, Rating, Cast, Price, NbSold, RelDate} = Film,
 	
 	if
 	Rating > 7.0 ->
 		NewPrice = Price + Price * 0.10,
-		AdjustedFilm = {element(1, Film), element(2, Film), element(3, Film), element(4, Film), element(5, Film), NewPrice, element(7, Film), element(8, Film)},
+		AdjustedFilm = {Id, Title, Genre, Rating, Cast, NewPrice, NbSold, RelDate},
 		NewAdjustedFilms = lists:append(AdjustedFilms, [AdjustedFilm]);
 	Rating =< 7.0 ->
 		NewPrice = Price - Price * 0.05,
-		AdjustedFilm = {element(1, Film), element(2, Film), element(3, Film), element(4, Film), element(5, Film), NewPrice, element(7, Film), element(8, Film)},
+		AdjustedFilm = {Id, Title, Genre, Rating, Cast, NewPrice, NbSold, RelDate},
 		NewAdjustedFilms = lists:append(AdjustedFilms, [AdjustedFilm]);
 	true ->
 		NewAdjustedFilms = AdjustedFilms
@@ -94,7 +92,6 @@ q3(FilmIndx, Films, AdjustedFilms) ->
 	true ->
 		q3((FilmIndx + 1), Films, NewAdjustedFilms)
 	end.
-	
 	
 q4() ->
 	Films = films(),
@@ -127,4 +124,44 @@ insert(Film, SortedFilms, SortedIndx) ->
 		lists:append(SortedFilms, [Film]);
 	true ->
 		insert(Film, SortedFilms, SortedIndx + 1)
+	end.
+
+q6() ->
+	Films = films(),
+	q6(1, Films, []).
+	
+q6(FilmIndx, Films, Profits) ->
+	Film = lists:nth(FilmIndx, Films),
+	{_,_,_,_,_,Price,NbSold,_} = Film,
+	
+	NewProfits = lists:append(Profits, [Price * NbSold]),
+
+	if 
+	FilmIndx == length(Films) ->
+		NewProfits;
+	true ->
+		q6((FilmIndx + 1), Films, NewProfits)
+	end.
+
+q8(D1, D2) ->
+	Films = films(),
+	
+	q8(1, D1, D2, Films, []).
+	
+q8(FilmIndx, D1, D2, Films, FilmsInDates) ->
+	{Id, Title, _, _, _, _, _, RelDate} = lists:nth(FilmIndx, Films),
+	
+	if 
+	((D1 < D2) and ((RelDate >= D1) and (RelDate =< D2))) or ((D2 =< D1) and ((RelDate >= D2) and (RelDate < D1))) ->
+		Film = {Id, Title},
+		NewFilmsInDates = lists:append(FilmsInDates, [Film]);
+	true ->
+		NewFilmsInDates = FilmsInDates
+	end,
+	
+	if 
+	FilmIndx == length(Films) ->
+		NewFilmsInDates;
+	true ->
+		q8((FilmIndx + 1), D1, D2, Films, NewFilmsInDates)
 	end.
