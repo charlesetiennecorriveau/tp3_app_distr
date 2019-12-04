@@ -1,10 +1,10 @@
 -module(tp3).
--export([q1/0, q2/0, q3/0, q4/0, q6/0, q8/2]).
+
+-export([q1/0, q2/0, q3/0, q4/0, q5/0, q6/0, q7/0, q8/2]).
 
 
 %Films = [{id (rnd), titre (min 2 lettres), genre (enum), note moyenne (float), equipe (list acteurs separe par virgule), prix vente, nb exemplaires vendus, date production }].
-films() -> [{1, "Film 1", "action", 7.0, ["a 1","a 2","a 3"], 10.99, 5000, {2017,01,01}}, {2, "Film 2", "action", 7.3, ["a 1","a 2","a 3"], 7.99, 4000, {2020,01,01}}, {3, "Film 3", "action", 4.7, ["a 1","a 2","a 3"], 9.99, 3000, {2019,01,01}}, {4, "Film 4", "action", 4.8, ["a 1","a 2","a 3"], 8.99, 10000, {2019,01,01}}, {5, "Film 5", "action", 4.3, ["a 1","a 2","a 3"], 9.99, 2500, {2019,01,01}}].
-
+films() -> [{1, "Film 1", "action", 7.0, ["a2","a3"], 10.99, 5000, {2017,01,01}}, {2, "Film 2", "action", 7.3, ["a2","a3"], 7.99, 4000, {2020,01,01}}, {3, "Film 3", "action", 4.7, ["a2","a3"], 9.99, 3000, {2019,01,01}}, {4, "Film 4", "action", 4.8, ["a1","a2","a3"], 8.99, 10000, {2019,01,01}}, {5, "Film 5", "action", 4.3, ["a1","a2","a3"], 9.99, 2500, {2019,01,01}}].
 
 q1() -> 
 	Films = films(),
@@ -33,12 +33,10 @@ q1(FilmIndx, Max, Films, MaxFilms) ->
 	true ->
 		q1((FilmIndx + 1), NewMax, Films, NewMaxFilms)
 	end.
-
-		
 	
 q2() -> 
 	Films = films(),
-	q2(1, element(6, lists:nth(1, Films)), Films, "").
+	q2(1, element(6, lists:nth(1, Films)), Films, []).
 	
 q2(FilmIndx, Min, Films, MinFilms) ->
 
@@ -126,6 +124,37 @@ insert(Film, SortedFilms, SortedIndx) ->
 		insert(Film, SortedFilms, SortedIndx + 1)
 	end.
 
+q5() -> 
+	Films = films(),
+	q5(1, 0, Films, []).
+	
+q5(FilmIndx, Max, Films, MaxFilms) ->
+
+	Film = lists:nth(FilmIndx, Films),
+	Price = element(6, Film),
+	Qty = element(7, Film),
+	
+	Profit = Qty * Price,
+	
+	if
+    Profit > Max ->
+        NewMax = Profit,
+        NewMaxFilms = [element(2, Film)];
+    Profit == Max ->
+		NewMax = Max,
+		NewMaxFilms = lists:append(MaxFilms, [element(2, Film)]);
+    true ->
+        NewMax = Max,
+        NewMaxFilms = MaxFilms
+    end,
+    
+    if 
+	FilmIndx == length(Films) ->
+		NewMaxFilms;
+	true ->
+		q5((FilmIndx + 1), NewMax, Films, NewMaxFilms)
+	end.
+	
 q6() ->
 	Films = films(),
 	q6(1, Films, []).
@@ -143,6 +172,30 @@ q6(FilmIndx, Films, Profits) ->
 		q6((FilmIndx + 1), Films, NewProfits)
 	end.
 
+q7() ->
+	Films = films(),
+	Res = io:fread("Prompt> ","~s"),
+	Name = lists:nth(1, element(2, Res)),
+	q7(1, Films, [], Name).
+	
+q7(FilmIndx, Films, FilmsWithActor, ActorName) ->
+	Film = lists:nth(FilmIndx, Films),
+	IsMember = lists:member(ActorName, element(5, Film)),
+	
+	if
+	IsMember ->
+		NewFilmsWithActor = lists:reverse([Film] ++ FilmsWithActor);
+	true ->
+		NewFilmsWithActor = FilmsWithActor
+	end,
+	
+	if
+	FilmIndx == length(Films) ->
+		NewFilmsWithActor;
+	true ->
+		q7(FilmIndx + 1, Films, NewFilmsWithActor, ActorName)
+	end.
+	
 q8(D1, D2) ->
 	Films = films(),
 	
