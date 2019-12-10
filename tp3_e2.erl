@@ -11,15 +11,13 @@
 %EXERCICE 2
 q1() ->
 	IP = io:fread("Please enter IP address> ", "~s"),
-
 	try
 		[A, B, C, D] = string:tokens(lists:nth(1, element(2, IP)), "."),
+		
 		IP1 = list_to_integer(A),
 		IP2 = list_to_integer(B),
 		IP3 = list_to_integer(C),
 		IP4 = list_to_integer(D),
-		
-		io:fwrite("~s.~s.~s.~s~n", [IP1, IP2, IP3, IP4]),
 		
 		if
 		(IP1 >= 0) and (IP1 < 127) ->
@@ -59,5 +57,5 @@ q1() ->
 			io:fwrite("erreur~n", [])
 		end
 	catch _:_ ->
-		io:fwrite("erreur4~n", [])
+		io:fwrite("erreur~n", [])
 	end.
