@@ -1,7 +1,14 @@
--module(tp3).
+%% ----------------------------------
+%% @author Jeremy Arsenault-Lavoie, Charles-Etienne Corriveau
+%% @copyright 2019
+%% @doc
+%% @end
+%% ----------------------------------
 
+-module(tp3).
 -export([q1/0, q2/0, q3/0, q4/0, q5/0, q6/0, q7/0, q8/2]).
 
+%EXERCICE 1
 
 %Films = [{id (rnd), titre (min 2 lettres), genre (enum), note moyenne (float), equipe (list acteurs separe par virgule), prix vente, nb exemplaires vendus, date production }].
 films() -> [{1, "Film 1", "action", 7.0, ["a2","a3"], 10.99, 5000, {2017,01,01}}, {2, "Film 2", "action", 7.3, ["a2","a3"], 7.99, 4000, {2020,01,01}}, {3, "Film 3", "action", 4.7, ["a2","a3"], 9.99, 3000, {2019,01,01}}, {4, "Film 4", "action", 4.8, ["a1","a2","a3"], 8.99, 10000, {2019,01,01}}, {5, "Film 5", "action", 4.3, ["a1","a2","a3"], 9.99, 2500, {2019,01,01}}].
