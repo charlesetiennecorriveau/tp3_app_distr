@@ -1,3 +1,4 @@
+# Erlang
 .eunit
 deps
 *.o
@@ -8,3 +9,11 @@ ebin/*.beam
 rel/example_project
 .concrete/DEV_MODE
 .rebar
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
